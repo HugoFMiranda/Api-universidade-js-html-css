@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD</title>
+    <link rel="stylesheet" href="css/site.css" />
+</head>
+<div id="content">
+    <h1>CRUD</h1>
+    <h3>Add Curso</h3>
+    <form action="javascript:void(0);" method="POST" onsubmit="addCurso()">
+        <input type="text" id="add-curso_nome" placeholder="Nome curso">
+        <input type="text" id="add-curso_sigla" placeholder="Sigla curso">
+        <input type="submit" value="Add">
+    </form><br>
+
+    <h3>Add Aluno</h3>
+    <form action="javascript:void(0);" method="POST" onsubmit="addAluno()">
+        <input type="text" id="add-aluno_nome" placeholder="Nome Aluno">
+        <input type="text" id="add-aluno_curso" placeholder="Sigla curso">
+        <input type="submit" value="Add">
+    </form>
+
+    <h4>Cursos</h4>
+
+    <div id="editForm-curso">
+        <h3>Edit</h3>
+        <form action="javascript:void(0);" onsubmit="updateCurso()">
+            <input type="hidden" id="edit-curso_id">
+            <input type="text" id="edit-curso_nome">
+            <input type="text" id="edit-curso_sigla">
+            <input type="submit" value="Save">
+            <a onclick="closeInput()" aria-label="Close">&#10006;</a>
+        </form>
+    </div>
+
+    <div id="editForm-aluno">
+        <h3>Edit</h3>
+        <form action="javascript:void(0);" onsubmit="updateAluno()">
+            <input type="hidden" id="edit-aluno_id">
+            <input type="text" id="edit-aluno_nome">
+            <input type="text" id="edit-aluno_curso">
+            <input type="submit" value="Save">
+            <a onclick="closeInput()" aria-label="Close">&#10006;</a>
+        </form>
+    </div>
+
+    <p id="counter-cursos"></p>
+
+    <table>
+        <tr>
+            <th>id</th>
+            <th>Nome</th>
+            <th>Sigla</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tbody id="cursos"></tbody>
+    </table>
+
+    <h4>Alunos</h4>
+    <p id="counter-alunos"></p>
+
+    <table>
+        <tr>
+            <th>id</th>
+            <th>Nome</th>
+            <th>Curso</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tbody id="alunos"></tbody>
+    </table>
+</div>
+    <script src="js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        getAll();
+    </script>
+
+</html>

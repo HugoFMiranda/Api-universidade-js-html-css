@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "p6UyzsfADVemV3ANYHohswbvF6daYXsViJhHgIc70zNbzeWTQUAULiE4Yor2Z1OkFJkxvcC0lVVCuosoE2mLsA==",
+  "dgSpecHash": "BFOFXTXuvfFOXo47LsYdQz+E51evIrpWXCPBQ9E5OnIkwDFkMuw+3VORfWDDwFe6PRtw6EvJq0J0lv5aX92SpA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hugo\\Desktop\\Api-Universidade\\Universidade-Api.csproj",
+  "projectFilePath": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\Universidade-Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hugo\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Hugo\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
