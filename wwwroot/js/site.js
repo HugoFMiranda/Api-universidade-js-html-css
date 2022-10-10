@@ -53,7 +53,7 @@ function addAluno () {
 
   const aluno = {
     nome: addNameTextbox.value.trim(),
-    curso: addSiglaTextbox.value.trim()
+    siglaCurso: addSiglaTextbox.value.trim()
   }
 
   fetch(uri + '/aluno', {
@@ -103,16 +103,16 @@ function displayEditFormAlunos (id) {
 
   document.getElementById('edit-aluno_id').value = aluno.id
   document.getElementById('edit-aluno_nome').value = aluno.nome
-  document.getElementById('edit-aluno_curso').value = aluno.curso
+  document.getElementById('edit-aluno_curso').value = aluno.siglaCurso
   document.getElementById('editForm-aluno').style.display = 'block'
 }
 
 function updateAluno () {
   const alunoId = document.getElementById('edit-aluno_id').value
   const aluno = {
-    id: parseInt(alunoId, 10),
+    id: parseInt(alunoId),
     nome: document.getElementById('edit-aluno_nome').value.trim(),
-    curso: document.getElementById('edit-aluno_curso').value.trim()
+    siglaCurso: document.getElementById('edit-aluno_curso').value.trim()
   }
 
   fetch(`${uri}` + '/aluno/' + `${aluno.id}`, {
@@ -134,7 +134,7 @@ function updateAluno () {
 function updateCurso () {
   const cursoId = document.getElementById('edit-curso_id').value
   const curso = {
-    id: parseInt(cursoId, 10),
+    id: parseInt(cursoId),
     nome: document.getElementById('edit-curso_nome').value.trim(),
     sigla: document.getElementById('edit-curso_sigla').value.trim()
   }
@@ -245,7 +245,7 @@ function _displayAlunos (data) {
     td2.appendChild(textNode2)
 
     let td3 = tr.insertCell(2)
-    let textNode3 = document.createTextNode(aluno.curso)
+    let textNode3 = document.createTextNode(aluno.siglaCurso)
     td3.appendChild(textNode3)
 
     let td4 = tr.insertCell(3)
