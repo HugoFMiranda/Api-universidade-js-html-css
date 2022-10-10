@@ -8,7 +8,7 @@ function getAll () {
 }
 
 function getAlunos () {
-  fetch(uri + '/aluno')
+  fetch(uri + '/alunos')
     .then(response => response.json())
     .then(data => _displayAlunos(data))
     .catch(error => console.error('Unable to get alunos.', error))
@@ -56,7 +56,7 @@ function addAluno () {
     siglaCurso: addSiglaTextbox.value.trim()
   }
 
-  fetch(uri + '/aluno', {
+  fetch(uri + '/alunos', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -74,7 +74,7 @@ function addAluno () {
 }
 
 function deleteAluno (id) {
-  fetch(`${uri}` + '/aluno/' + `${id}`, {
+  fetch(`${uri}` + '/alunos/' + `${id}`, {
     method: 'DELETE'
   })
     .then(() => getAlunos())
@@ -115,7 +115,7 @@ function updateAluno () {
     siglaCurso: document.getElementById('edit-aluno_curso').value.trim()
   }
 
-  fetch(`${uri}` + '/aluno/' + `${aluno.id}`, {
+  fetch(`${uri}` + '/alunos/' + `${aluno.id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',

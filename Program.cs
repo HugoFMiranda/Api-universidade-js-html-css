@@ -22,6 +22,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 app.UseDefaultFiles();
+
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();

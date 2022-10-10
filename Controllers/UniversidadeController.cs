@@ -19,7 +19,9 @@ namespace Universidade_Api.Controllers
         {
             _context = context;
         }
-        [HttpGet("/")]
+
+        // GET: api/Universidade/cursos/populate
+        [HttpGet("populate")]
         public void PopulateCursos()
         {
             _context.Curso.Add(new Curso { Sigla = "LES", Nome = "Licenciatura em engenharia de sistemas" });

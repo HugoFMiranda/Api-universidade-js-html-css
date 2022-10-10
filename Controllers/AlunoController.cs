@@ -10,7 +10,7 @@ using Universidade_Api.Models;
 
 namespace Universidade_Api.Controllers
 {
-    [Route("api/universidade/[controller]")]
+    [Route("api/universidade/[controller]s")]
     [ApiController]
     public class AlunoController : ControllerBase
     {
@@ -29,6 +29,19 @@ namespace Universidade_Api.Controllers
                 Nome = aluno.Nome,
                 SiglaCurso = aluno.Curso
             };
+        }
+
+        // GET: api/Universidade/alunos/populate
+        [HttpGet("populate")]
+        public void PopulateAluno()
+        {
+            _context.Aluno.Add(new Aluno { Nome = "Tiago", Curso = "LES" });
+            _context.Aluno.Add(new Aluno { Nome = "Diogo", Curso = "LEI" });
+            _context.Aluno.Add(new Aluno { Nome = "Bernardo", Curso = "LEM" });
+            _context.Aluno.Add(new Aluno { Nome = "João", Curso = "LEA" });
+            _context.Aluno.Add(new Aluno { Nome = "Hugo", Curso = "LEQ" });
+            _context.Aluno.Add(new Aluno { Nome = "Bea", Curso = "LEP" });
+            _context.SaveChangesAsync();
         }
 
         private static string getSigla(String curso)
