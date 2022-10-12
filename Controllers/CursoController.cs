@@ -9,13 +9,13 @@ using Universidade_Api.Models;
 
 namespace Universidade_Api.Controllers
 {
-    [Route("api/[controller]/cursos")]
+    [Route("api/Universidade/[controller]s")]
     [ApiController]
-    public class UniversidadeController : ControllerBase
+    public class CursoController : ControllerBase
     {
         private readonly CursoContext _context;
 
-        public UniversidadeController(CursoContext context)
+        public CursoController(CursoContext context)
         {
             _context = context;
         }
