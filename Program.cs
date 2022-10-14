@@ -13,6 +13,10 @@ builder.Services.AddDbContext<AlunoContext>(opt =>
     opt.UseInMemoryDatabase("Aluno"));
 builder.Services.AddDbContext<CursoContext>(opt =>
     opt.UseInMemoryDatabase("Curso"));
+builder.Services.AddDbContext<UnidadeCurricularContext>(opt =>
+opt.UseInMemoryDatabase("UnidadeCurricular"));
+builder.Services.AddDbContext<NotasContext>(opt =>
+    opt.UseInMemoryDatabase("Notas"));
 
 var app = builder.Build();
 
