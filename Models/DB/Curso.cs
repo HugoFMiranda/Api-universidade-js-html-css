@@ -1,4 +1,4 @@
-namespace Universidade_Api.Models
+namespace Universidade_Api
 {
     public class Curso
     {

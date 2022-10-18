@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Api_Universidade_js_html_css.Models;
+using Universidade_Api;
 
 namespace Universidade_Api.Controllers
 {
-    [Route("api/Universidade/[controller]")]
+    [Route("api/Ucs")]
     [ApiController]
     public class UnidadeCurricularController : ControllerBase
     {
@@ -20,46 +20,65 @@ namespace Universidade_Api.Controllers
             _context = context;
         }
 
-        private static UnidadeCurricularDTO UnidadeCurricularToDTO(UnidadeCurricular unidadeCurricular)
+        private static UnidadeCurricularDTO UcToDTO(UnidadeCurricular unidadeCurricular)
         {
             return new UnidadeCurricularDTO
             {
                 Id = unidadeCurricular.Id,
                 Nome = unidadeCurricular.Nome,
                 Sigla = unidadeCurricular.Sigla,
-                SiglaCurso = unidadeCurricular.Curso
+                SiglaCurso = unidadeCurricular.Curso?.Sigla,
+                Ano = unidadeCurricular.Ano
             };
         }
-        // GET: api/Universidade/UnidadeCurricular
+
+        // GET: api/UnidadeCurricular
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UnidadeCurricularDTO>>> GetUnidadeCurricular()
         {
-            if (_context.UnidadeCurricular == null)
+            if (_context.UnidadesCurriculares == null)
             {
                 return NotFound();
             }
-            return await _context.UnidadeCurricular.Select(x => UnidadeCurricularToDTO(x)).ToListAsync();
+            return await _context.UnidadesCurriculares.Select(x => UcToDTO(x)).ToListAsync();
         }
 
-        // GET: api/Universidade/UnidadeCurricular/5
-        [HttpGet("{id}")]
+        // GET: api/UnidadeCurricular/5
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<UnidadeCurricularDTO>> GetUnidadeCurricular(long id)
         {
-            if (_context.UnidadeCurricular == null)
+            if (_context.UnidadesCurriculares == null)
             {
                 return NotFound();
             }
-            var unidadeCurricular = await _context.UnidadeCurricular.FindAsync(id);
+            var unidadeCurricular = await _context.UnidadesCurriculares.FindAsync(id);
 
             if (unidadeCurricular == null)
             {
                 return NotFound();
             }
 
-            return UnidadeCurricularToDTO(unidadeCurricular);
+            return UcToDTO(unidadeCurricular);
         }
 
-        // PUT: api/Universidade/UnidadeCurricular/5
+        [HttpGet("{sigla}")]
+        public async Task<ActionResult<UnidadeCurricularDTO>> GetCurso(string sigla)
+        {
+            if (_context.UnidadesCurriculares == null)
+            {
+                return NotFound();
+            }
+            var uc = await _context.UnidadesCurriculares.Where(uc => uc.Sigla == sigla).FirstOrDefaultAsync();
+
+            if (uc == null)
+            {
+                return NotFound();
+            }
+
+            return UcToDTO(uc);
+        }
+
+        // PUT: api/UnidadeCurricular/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUnidadeCurricular(long id, UnidadeCurricularDTO unidadeCurricularDTO)
@@ -69,71 +88,66 @@ namespace Universidade_Api.Controllers
                 return BadRequest();
             }
 
-            var unidadeCurricular = await _context.UnidadeCurricular.FindAsync(id);
-            if (unidadeCurricular == null)
+            var uc = await _context.UnidadesCurriculares.FindAsync(id);
+            if (uc == null)
             {
                 return NotFound();
             }
 
-            unidadeCurricular.Nome = unidadeCurricularDTO.Nome;
-            unidadeCurricular.Sigla = unidadeCurricularDTO.Sigla;
-            unidadeCurricular.Curso = unidadeCurricularDTO.SiglaCurso;
+            uc.Nome = unidadeCurricularDTO.Nome;
+            uc.Sigla = unidadeCurricularDTO.Sigla;
+            uc.Curso = await _context.Cursos.Where(c => c.Sigla == unidadeCurricularDTO.SiglaCurso).FirstOrDefaultAsync();
+            uc.Ano = unidadeCurricularDTO.Ano;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!UnidadeCurricularExists(id))
             {
-                if (!UnidadeCurricularExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
         }
 
-        // POST: api/Universidade/UnidadeCurricular
+        // POST: api/UnidadeCurricular
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UnidadeCurricularDTO>> PostUnidadeCurricular(UnidadeCurricularDTO unidadeCurricularDTO)
+        public async Task<ActionResult<UnidadeCurricular>> PostUnidadeCurricular(UnidadeCurricularDTO unidadeCurricularDTO)
         {
-            var unidadeCurricular = new UnidadeCurricular
+            var uc = new UnidadeCurricular
             {
                 Nome = unidadeCurricularDTO.Nome,
                 Sigla = unidadeCurricularDTO.Sigla,
-                Curso = unidadeCurricularDTO.SiglaCurso
+                Curso = await _context.Cursos.Where(c => c.Sigla == unidadeCurricularDTO.SiglaCurso).FirstOrDefaultAsync(),
+                Ano = unidadeCurricularDTO.Ano
             };
-            if (_context.UnidadeCurricular == null)
-            {
-                return Problem("Entity set 'UniversidadeContext.UnidadeCurricular'  is null.");
-            }
-            _context.UnidadeCurricular.Add(unidadeCurricular);
+
+            _context.UnidadesCurriculares.Add(uc);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUnidadeCurricular", new { id = unidadeCurricular.Id }, unidadeCurricular);
+            return CreatedAtAction(
+                nameof(GetUnidadeCurricular),
+                new { id = uc.Id },
+                UcToDTO(uc));
         }
 
-        // DELETE: api/Universidade/UnidadeCurricular/5
+        // DELETE: api/UnidadeCurricular/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUnidadeCurricular(long id)
         {
-            if (_context.UnidadeCurricular == null)
+            if (_context.UnidadesCurriculares == null)
             {
                 return NotFound();
             }
-            var unidadeCurricular = await _context.UnidadeCurricular.FindAsync(id);
+            var unidadeCurricular = await _context.UnidadesCurriculares.FindAsync(id);
             if (unidadeCurricular == null)
             {
                 return NotFound();
             }
 
-            _context.UnidadeCurricular.Remove(unidadeCurricular);
+            _context.UnidadesCurriculares.Remove(unidadeCurricular);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -141,7 +155,7 @@ namespace Universidade_Api.Controllers
 
         private bool UnidadeCurricularExists(long id)
         {
-            return (_context.UnidadeCurricular?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.UnidadesCurriculares?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace Api_Universidade_js_html_css.Models
+namespace Universidade_Api
 {
     public class UnidadeCurricularDTO
     {
@@ -9,5 +9,7 @@ namespace Api_Universidade_js_html_css.Models
         public string? Nome { get; set; }
 
         public string? SiglaCurso { get; set; }
+
+        public int? Ano { get; set; }
     }
 }

@@ -5,55 +5,67 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Universidade_Api.Models;
+using Universidade_Api;
 
 namespace Universidade_Api.Controllers
 {
-    [Route("api/Universidade/[controller]s")]
+    [Route("api/[controller]s")]
     [ApiController]
     public class CursoController : ControllerBase
     {
-        private readonly CursoContext _context;
+        private readonly UniversidadeContext _context;
 
-        public CursoController(CursoContext context)
+        public CursoController(UniversidadeContext context)
         {
             _context = context;
         }
 
-        // GET: api/Universidade/cursos/populate
+        // GET: api/cursos/populate
         [HttpGet("populate")]
         public void PopulateCursos()
         {
-            _context.Curso.Add(new Curso { Sigla = "LES", Nome = "Licenciatura em engenharia de sistemas" });
-            _context.Curso.Add(new Curso { Sigla = "LEI", Nome = "Licenciatura em engenharia informatica" });
-            _context.Curso.Add(new Curso { Sigla = "LEM", Nome = "Licenciatura em engenharia mecanica" });
-            _context.Curso.Add(new Curso { Sigla = "LEA", Nome = "Licenciatura em engenharia aeronautica" });
-            _context.Curso.Add(new Curso { Sigla = "LEQ", Nome = "Licenciatura em engenharia quimica" });
-            _context.Curso.Add(new Curso { Sigla = "LEP", Nome = "Licenciatura em engenharia petrolifera" });
+            _context.Cursos.Add(new Curso { Sigla = "LES", Nome = "Licenciatura em engenharia de sistemas" });
+            _context.Cursos.Add(new Curso { Sigla = "LEI", Nome = "Licenciatura em engenharia informatica" });
+            _context.Cursos.Add(new Curso { Sigla = "LEM", Nome = "Licenciatura em engenharia mecanica" });
+            _context.Cursos.Add(new Curso { Sigla = "LEA", Nome = "Licenciatura em engenharia aeronautica" });
+            _context.Cursos.Add(new Curso { Sigla = "LEQ", Nome = "Licenciatura em engenharia quimica" });
+            _context.Cursos.Add(new Curso { Sigla = "LEP", Nome = "Licenciatura em engenharia petrolifera" });
             _context.SaveChangesAsync();
         }
 
-        // GET: api/Universidade/cursos/
+        private static string getSigla(String curso)
+        {
+            string text = curso;
+            string firstLetters = "";
+
+            foreach (var part in text.Split(' '))
+            {
+                firstLetters += part.Substring(-2, 1);
+            }
+            return firstLetters;
+        }
+
+        // GET: api/cursos/
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Curso>>> GetCurso()
         {
 
-            if (_context.Curso == null)
+            if (_context.Cursos == null)
             {
                 return NotFound();
             }
-            return await _context.Curso.ToListAsync();
+            return await _context.Cursos.ToListAsync();
         }
 
-        // GET: api/Universidade/cursos/5
+        // GET: api/cursos/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Curso>> GetCurso(long id)
         {
-            if (_context.Curso == null)
+            if (_context.Cursos == null)
             {
                 return NotFound();
             }
-            var curso = await _context.Curso.FindAsync(id);
+            var curso = await _context.Cursos.FindAsync(id);
 
             if (curso == null)
             {
@@ -63,15 +75,15 @@ namespace Universidade_Api.Controllers
             return curso;
         }
 
-        // GET: api/Universidade/cursos/LES
+        // GET: api/cursos/LES
         [HttpGet("{sigla}")]
         public async Task<ActionResult<Curso>> GetCurso(string sigla)
         {
-            if (_context.Curso == null)
+            if (_context.Cursos == null)
             {
                 return NotFound();
             }
-            var curso = await _context.Curso.Where(c => c.Sigla == sigla).FirstOrDefaultAsync();
+            var curso = await _context.Cursos.Where(c => c.Sigla == sigla).FirstOrDefaultAsync();
 
             if (curso == null)
             {
@@ -82,7 +94,7 @@ namespace Universidade_Api.Controllers
         }
 
 
-        // PUT: api/Universidade/cursos/5
+        // PUT: api/cursos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCurso(long id, Curso curso)
@@ -113,36 +125,36 @@ namespace Universidade_Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Universidade/cursos/
+        // POST: api/cursos/
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Curso>> PostCurso(Curso curso)
         {
-            if (_context.Curso == null)
+            if (_context.Cursos == null)
             {
-                return Problem("Entity set 'UniversidadeContext.Curso'  is null.");
+                return Problem("Entity set 'UniversidadeContext.Cursos'  is null.");
             }
-            _context.Curso.Add(curso);
+            _context.Cursos.Add(curso);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetCurso), new { id = curso.Id }, curso);
         }
 
-        // DELETE: api/Universidade/cursos/5
+        // DELETE: api/cursos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCurso(long id)
         {
-            if (_context.Curso == null)
+            if (_context.Cursos == null)
             {
                 return NotFound();
             }
-            var curso = await _context.Curso.FindAsync(id);
+            var curso = await _context.Cursos.FindAsync(id);
             if (curso == null)
             {
                 return NotFound();
             }
 
-            _context.Curso.Remove(curso);
+            _context.Cursos.Remove(curso);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -150,7 +162,7 @@ namespace Universidade_Api.Controllers
 
         private bool CursoExists(long id)
         {
-            return (_context.Curso?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Cursos?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
