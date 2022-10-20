@@ -9,6 +9,7 @@ using Universidade_Api;
 
 namespace Universidade_Api.Controllers
 {
+    // *! DUVIDA 
     [Route("api/[controller]s")]
     [ApiController]
     public class AlunoController : ControllerBase
@@ -100,6 +101,7 @@ namespace Universidade_Api.Controllers
 
             aluno.Nome = alunoDTO.Nome;
             aluno.Curso = await _context.Cursos.Where(c => c.Sigla == alunoDTO.SiglaCurso).FirstOrDefaultAsync();
+            // *! DUVIDA 
             if (alunoDTO.SiglasUcs != null)
             {
                 aluno.UnidadesCurriculares = AddAlunoToUc(await _context.UnidadesCurriculares.Where(u => alunoDTO.SiglasUcs.Contains(u.Sigla)).ToListAsync(), alunoDTO);
@@ -173,6 +175,7 @@ namespace Universidade_Api.Controllers
                 AlunoToDTO(aluno));
         }
 
+        // *! DUVIDA 
         private ICollection<UnidadeCurricular> AddAlunoToUc(ICollection<UnidadeCurricular> ucs, AlunoDTO alunoDTO)
         {
             return ucs.Where(uc => uc.Curso.Sigla == alunoDTO.SiglaCurso).ToList();
