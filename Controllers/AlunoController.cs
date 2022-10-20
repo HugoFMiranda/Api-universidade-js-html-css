@@ -9,7 +9,6 @@ using Universidade_Api;
 
 namespace Universidade_Api.Controllers
 {
-    // *! DUVIDA 
     [Route("api/[controller]s")]
     [ApiController]
     public class AlunoController : ControllerBase
@@ -23,26 +22,16 @@ namespace Universidade_Api.Controllers
 
         private static AlunoDTO AlunoToDTO(Aluno aluno)
         {
+            ICollection<string?>? siglasucs = aluno.UnidadesCurriculares?.Select(uc => uc.Sigla).ToList();
+            var siglacurso = aluno.Curso?.Sigla;
             return new AlunoDTO
             {
                 Id = aluno.Id,
                 Nome = aluno.Nome,
-                SiglaCurso = aluno.Curso?.Sigla
+                SiglaCurso = siglacurso,
+                SiglasUcs = siglasucs
             };
         }
-
-        // // GET: api/Universidade/alunos/populate
-        // [HttpGet("populate")]
-        // public void PopulateAluno()
-        // {
-        //     _context.Alunos.Add(new Aluno { Nome = "Tiago", Curso = "LES" });
-        //     _context.Alunos.Add(new Aluno { Nome = "Diogo", Curso = "LEI" });
-        //     _context.Alunos.Add(new Aluno { Nome = "Bernardo", Curso = "LEM" });
-        //     _context.Alunos.Add(new Aluno { Nome = "João", Curso = "LEA" });
-        //     _context.Alunos.Add(new Aluno { Nome = "Hugo", Curso = "LEQ" });
-        //     _context.Alunos.Add(new Aluno { Nome = "Bea", Curso = "LEP" });
-        //     _context.SaveChangesAsync();
-        // }
 
         // GET: api/Aluno
         [HttpGet]
@@ -50,9 +39,9 @@ namespace Universidade_Api.Controllers
         {
             if (_context.Alunos == null)
             {
-                return NotFound();
+                return NotFound("Alunos not found");
             }
-            return await _context.Alunos.Select(x => AlunoToDTO(x)).ToListAsync();
+            return await _context.Alunos.Include(x => x.Curso).Include(x => x.UnidadesCurriculares).Select(x => AlunoToDTO(x)).ToListAsync();
         }
 
         // GET: api/Aluno/5
@@ -61,14 +50,15 @@ namespace Universidade_Api.Controllers
         {
             if (_context.Alunos == null)
             {
-                return NotFound();
+                return NotFound("Alunos is null");
             }
-            var aluno = await _context.Alunos.FindAsync(id);
+            var aluno = await _context.Alunos.Include(x => x.Curso).Include(x => x.UnidadesCurriculares).FirstOrDefaultAsync(x => x.Id == id);
 
             if (aluno == null)
             {
-                return NotFound();
+                return NotFound("Aluno não encontrado");
             }
+            _context.Entry(aluno);
 
             return AlunoToDTO(aluno);
         }
@@ -78,9 +68,10 @@ namespace Universidade_Api.Controllers
         {
             if (_context.Alunos == null)
             {
-                return NotFound();
+                return NotFound("Alunos not found");
             }
-            return await _context.Alunos.Select(n => AlunoToDTO(n)).Where(n => n.SiglaCurso == sigla).ToListAsync();
+
+            return await _context.Alunos.Where(x => x.Curso != null && x.Curso.Sigla == sigla).Include(x => x.Curso).Include(x => x.UnidadesCurriculares).Select(x => AlunoToDTO(x)).ToListAsync();
         }
 
         // PUT: api/Aluno/5
@@ -90,60 +81,28 @@ namespace Universidade_Api.Controllers
         {
             if (id != alunoDTO.Id)
             {
-                return BadRequest();
+                return BadRequest("Id do aluno não corresponde ao id do aluno a alterar");
             }
 
-            var aluno = await _context.Alunos.FindAsync(id);
+            var aluno = await _context.Alunos.Include(x => x.Curso).Include(x => x.UnidadesCurriculares).FirstOrDefaultAsync(x => x.Id == id);
             if (aluno == null)
             {
-                return NotFound();
+                return NotFound("Aluno não encontrado");
             }
 
             aluno.Nome = alunoDTO.Nome;
             aluno.Curso = await _context.Cursos.Where(c => c.Sigla == alunoDTO.SiglaCurso).FirstOrDefaultAsync();
-            // *! DUVIDA 
             if (alunoDTO.SiglasUcs != null)
             {
-                aluno.UnidadesCurriculares = AddAlunoToUc(await _context.UnidadesCurriculares.Where(u => alunoDTO.SiglasUcs.Contains(u.Sigla)).ToListAsync(), alunoDTO);
+                aluno.UnidadesCurriculares = addAlunoToUc(alunoDTO);
             }
-            // if (alunoDTO.SiglasUcs != null)
-            // {
-            //     aluno.UnidadesCurriculares = new List<UnidadeCurricular>();
-            //     ICollection<UnidadeCurricular>? ucs = await _context.UnidadesCurriculares.ToListAsync();
-            //     if (ucs != null)
-            //     {
-            //         foreach (UnidadeCurricular uc in ucs)
-            //         {
-            //             if (uc.Sigla != null)
-            //             {
-            //                 if (alunoDTO.SiglasUcs.Contains(uc.Sigla))
-            //                 {
-            //                     aluno.UnidadesCurriculares.Add(uc);
-            //                 }
-            //             }
-            //             else
-            //             {
-            //                 return NotFound();
-            //             }
-
-            //         }
-            //     }
-            //     else
-            //     {
-            //         return NotFound();
-            //     }
-            // }
-            // else
-            // {
-            //     return NotFound();
-            // }
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException) when (!AlunoExists(id))
             {
-                return NotFound();
+                return NotFound("Aluno não encontrado");
             }
 
             return NoContent();
@@ -156,14 +115,14 @@ namespace Universidade_Api.Controllers
         {
             if (alunoDTO == null)
             {
-                return BadRequest();
+                return BadRequest("Aluno não pode ser nulo");
             }
 
             var aluno = new Aluno
             {
                 Nome = alunoDTO.Nome,
                 Curso = await _context.Cursos.Where(c => c.Sigla == alunoDTO.SiglaCurso).FirstOrDefaultAsync(),
-                UnidadesCurriculares = AddAlunoToUc(await _context.UnidadesCurriculares.Where(u => alunoDTO.SiglasUcs.Contains(u.Sigla)).ToListAsync(), alunoDTO)
+                UnidadesCurriculares = addAlunoToUc(alunoDTO)
             };
 
             _context.Alunos.Add(aluno);
@@ -175,10 +134,18 @@ namespace Universidade_Api.Controllers
                 AlunoToDTO(aluno));
         }
 
-        // *! DUVIDA 
-        private ICollection<UnidadeCurricular> AddAlunoToUc(ICollection<UnidadeCurricular> ucs, AlunoDTO alunoDTO)
+        private ICollection<UnidadeCurricular>? addAlunoToUc(AlunoDTO alunoDTO)
         {
-            return ucs.Where(uc => uc.Curso.Sigla == alunoDTO.SiglaCurso).ToList();
+            ICollection<UnidadeCurricular> ucs = new List<UnidadeCurricular>();
+            if (alunoDTO == null)
+            {
+                return null;
+            }
+            if (alunoDTO.SiglasUcs != null)
+            {
+                ucs = _context.UnidadesCurriculares.Where(u => alunoDTO.SiglasUcs.Contains(u.Sigla)).ToList();
+            }
+            return ucs;
         }
 
         // DELETE: api/Aluno/5
@@ -189,7 +156,7 @@ namespace Universidade_Api.Controllers
 
             if (aluno == null)
             {
-                return NotFound();
+                return NotFound("Aluno não encontrado");
             }
 
             _context.Alunos.Remove(aluno);

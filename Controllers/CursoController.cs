@@ -31,6 +31,24 @@ namespace Universidade_Api.Controllers
             _context.Cursos.Add(new Curso { Sigla = "LEQ", Nome = "Licenciatura em engenharia quimica" });
             _context.Cursos.Add(new Curso { Sigla = "LEP", Nome = "Licenciatura em engenharia petrolifera" });
             _context.SaveChangesAsync();
+            _context.UnidadesCurriculares.Add(new UnidadeCurricular { Sigla = "P1", Nome = "Programação 1", Ano = 1, Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LES") });
+            _context.UnidadesCurriculares.Add(new UnidadeCurricular { Sigla = "P2", Nome = "Programação 2", Ano = 2, Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEI") });
+            _context.UnidadesCurriculares.Add(new UnidadeCurricular { Sigla = "P3", Nome = "Programação 3", Ano = 3, Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEM") });
+            _context.UnidadesCurriculares.Add(new UnidadeCurricular { Sigla = "P4", Nome = "Programação 4", Ano = 4, Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEA") });
+            _context.UnidadesCurriculares.Add(new UnidadeCurricular { Sigla = "P5", Nome = "Programação 5", Ano = 5, Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEQ") });
+            _context.SaveChangesAsync();
+            _context.Alunos.Add(new Aluno { Nome = "João", Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LES") });
+            _context.Alunos.Add(new Aluno { Nome = "Maria", Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEI") });
+            _context.Alunos.Add(new Aluno { Nome = "Pedro", Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEM") });
+            _context.Alunos.Add(new Aluno { Nome = "Ana", Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEA") });
+            _context.Alunos.Add(new Aluno { Nome = "Rui", Curso = _context.Cursos.FirstOrDefault(x => x.Sigla == "LEQ") });
+            _context.SaveChangesAsync();
+            _context.Notas.Add(new Nota { Valor = 10, UnidadeCurricular = _context.UnidadesCurriculares.FirstOrDefault(x => x.Sigla == "P1"), Aluno = _context.Alunos.FirstOrDefault(x => x.Nome == "João") });
+            _context.Notas.Add(new Nota { Valor = 11, UnidadeCurricular = _context.UnidadesCurriculares.FirstOrDefault(x => x.Sigla == "P2"), Aluno = _context.Alunos.FirstOrDefault(x => x.Nome == "Maria") });
+            _context.Notas.Add(new Nota { Valor = 12, UnidadeCurricular = _context.UnidadesCurriculares.FirstOrDefault(x => x.Sigla == "P3"), Aluno = _context.Alunos.FirstOrDefault(x => x.Nome == "Pedro") });
+            _context.Notas.Add(new Nota { Valor = 13, UnidadeCurricular = _context.UnidadesCurriculares.FirstOrDefault(x => x.Sigla == "P4"), Aluno = _context.Alunos.FirstOrDefault(x => x.Nome == "Ana") });
+            _context.Notas.Add(new Nota { Valor = 14, UnidadeCurricular = _context.UnidadesCurriculares.FirstOrDefault(x => x.Sigla == "P5"), Aluno = _context.Alunos.FirstOrDefault(x => x.Nome == "Rui") });
+            _context.SaveChangesAsync();
         }
 
         private static string getSigla(String curso)
@@ -52,7 +70,7 @@ namespace Universidade_Api.Controllers
 
             if (_context.Cursos == null)
             {
-                return NotFound();
+                return NotFound("Não existem cursos");
             }
             return await _context.Cursos.ToListAsync();
         }
@@ -63,13 +81,13 @@ namespace Universidade_Api.Controllers
         {
             if (_context.Cursos == null)
             {
-                return NotFound();
+                return NotFound("Não existem cursos");
             }
             var curso = await _context.Cursos.FindAsync(id);
 
             if (curso == null)
             {
-                return NotFound();
+                return NotFound("Não existe curso com esse id");
             }
 
             return curso;
@@ -81,13 +99,13 @@ namespace Universidade_Api.Controllers
         {
             if (_context.Cursos == null)
             {
-                return NotFound();
+                return NotFound("Não existem cursos");
             }
             var curso = await _context.Cursos.Where(c => c.Sigla == sigla).FirstOrDefaultAsync();
 
             if (curso == null)
             {
-                return NotFound();
+                return NotFound("Não existe curso com essa sigla");
             }
 
             return curso;
@@ -101,7 +119,7 @@ namespace Universidade_Api.Controllers
         {
             if (id != curso.Id)
             {
-                return BadRequest();
+                return BadRequest("Id do curso não corresponde ao id do curso a alterar");
             }
 
             _context.Entry(curso).State = EntityState.Modified;
@@ -114,7 +132,7 @@ namespace Universidade_Api.Controllers
             {
                 if (!CursoExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Não existe curso com esse id");
                 }
                 else
                 {
@@ -146,12 +164,12 @@ namespace Universidade_Api.Controllers
         {
             if (_context.Cursos == null)
             {
-                return NotFound();
+                return NotFound("Não existem cursos");
             }
             var curso = await _context.Cursos.FindAsync(id);
             if (curso == null)
             {
-                return NotFound();
+                return NotFound("Não existe curso com esse id");
             }
 
             _context.Cursos.Remove(curso);

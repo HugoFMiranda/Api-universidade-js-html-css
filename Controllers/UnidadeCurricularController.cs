@@ -9,7 +9,7 @@ using Universidade_Api;
 
 namespace Universidade_Api.Controllers
 {
-    [Route("api/Ucs")]
+    [Route("api/ucs")]
     [ApiController]
     public class UnidadeCurricularController : ControllerBase
     {
@@ -38,9 +38,9 @@ namespace Universidade_Api.Controllers
         {
             if (_context.UnidadesCurriculares == null)
             {
-                return NotFound();
+                return NotFound("Não existem unidades curriculares");
             }
-            return await _context.UnidadesCurriculares.Select(x => UcToDTO(x)).ToListAsync();
+            return await _context.UnidadesCurriculares.Include(x => x.Curso).Select(x => UcToDTO(x)).ToListAsync();
         }
 
         // GET: api/UnidadeCurricular/5
@@ -49,13 +49,13 @@ namespace Universidade_Api.Controllers
         {
             if (_context.UnidadesCurriculares == null)
             {
-                return NotFound();
+                return NotFound("Não existem unidades curriculares");
             }
-            var unidadeCurricular = await _context.UnidadesCurriculares.FindAsync(id);
+            var unidadeCurricular = await _context.UnidadesCurriculares.Include(x => x.Curso).FirstOrDefaultAsync(x => x.Id == id);
 
             if (unidadeCurricular == null)
             {
-                return NotFound();
+                return NotFound("Não existe uma unidade curricular com esse id");
             }
 
             return UcToDTO(unidadeCurricular);
@@ -66,13 +66,13 @@ namespace Universidade_Api.Controllers
         {
             if (_context.UnidadesCurriculares == null)
             {
-                return NotFound();
+                return NotFound("Não existem unidades curriculares");
             }
-            var uc = await _context.UnidadesCurriculares.Where(uc => uc.Sigla == sigla).FirstOrDefaultAsync();
+            var uc = await _context.UnidadesCurriculares.Include(x => x.Curso).Where(uc => uc.Sigla == sigla).FirstOrDefaultAsync();
 
             if (uc == null)
             {
-                return NotFound();
+                return NotFound("Não existe uma unidade curricular com essa sigla");
             }
 
             return UcToDTO(uc);
@@ -85,13 +85,13 @@ namespace Universidade_Api.Controllers
         {
             if (id != unidadeCurricularDTO.Id)
             {
-                return BadRequest();
+                return BadRequest("O id da unidade curricular não corresponde ao id da unidade curricular que se pretende alterar");
             }
 
-            var uc = await _context.UnidadesCurriculares.FindAsync(id);
+            var uc = await _context.UnidadesCurriculares.Include(x => x.Curso).FirstOrDefaultAsync(x => x.Id == id);
             if (uc == null)
             {
-                return NotFound();
+                return NotFound("Não existe uma unidade curricular com esse id");
             }
 
             uc.Nome = unidadeCurricularDTO.Nome;
@@ -105,7 +105,7 @@ namespace Universidade_Api.Controllers
             }
             catch (DbUpdateConcurrencyException) when (!UnidadeCurricularExists(id))
             {
-                return NotFound();
+                return NotFound("Não existe uma unidade curricular com esse id");
             }
 
             return NoContent();
@@ -139,12 +139,12 @@ namespace Universidade_Api.Controllers
         {
             if (_context.UnidadesCurriculares == null)
             {
-                return NotFound();
+                return NotFound("Não existem unidades curriculares");
             }
             var unidadeCurricular = await _context.UnidadesCurriculares.FindAsync(id);
             if (unidadeCurricular == null)
             {
-                return NotFound();
+                return NotFound("Não existe uma unidade curricular com esse id");
             }
 
             _context.UnidadesCurriculares.Remove(unidadeCurricular);
