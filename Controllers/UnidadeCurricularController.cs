@@ -116,11 +116,17 @@ namespace Universidade_Api.Controllers
         [HttpPost]
         public async Task<ActionResult<UnidadeCurricular>> PostUnidadeCurricular(UnidadeCurricularDTO unidadeCurricularDTO)
         {
+            Curso? curso = await _context.Cursos.Where(c => c.Sigla == unidadeCurricularDTO.SiglaCurso).FirstOrDefaultAsync();
+            if (curso == null)
+            {
+                return NotFound("Não existe um curso com essa sigla");
+            }
+
             var uc = new UnidadeCurricular
             {
                 Nome = unidadeCurricularDTO.Nome,
                 Sigla = unidadeCurricularDTO.Sigla,
-                Curso = await _context.Cursos.Where(c => c.Sigla == unidadeCurricularDTO.SiglaCurso).FirstOrDefaultAsync(),
+                Curso = curso,
                 Ano = unidadeCurricularDTO.Ano
             };
 

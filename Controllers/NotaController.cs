@@ -20,13 +20,14 @@ namespace Universidade_Api.Controllers
             _context = context;
         }
 
+        /// It takes a Nota object and returns a NotaDTO
         private static NotaDTO NotaToDTO(Nota nota)
         {
             return new NotaDTO
             {
                 Id = nota.Id,
                 Valor = nota.Valor,
-                SiglaUnidadeCurricular = nota.UnidadeCurricular?.Sigla,
+                SiglaUc = nota.UnidadeCurricular?.Sigla,
                 NomeAluno = nota.Aluno?.Nome
             };
         }
@@ -59,7 +60,7 @@ namespace Universidade_Api.Controllers
 
             return NotaToDTO(nota);
         }
-
+        // GET: api/Nota/SIGLA
         [HttpGet("{sigla}")]
         public async Task<ActionResult<IEnumerable<NotaDTO>>> GetCurso(string sigla)
         {
@@ -88,7 +89,7 @@ namespace Universidade_Api.Controllers
             }
 
             nota.Valor = notaDTO.Valor;
-            nota.UnidadeCurricular = await _context.UnidadesCurriculares.Where(c => c.Sigla == notaDTO.SiglaUnidadeCurricular).FirstOrDefaultAsync();
+            nota.UnidadeCurricular = await _context.UnidadesCurriculares.Where(c => c.Sigla == notaDTO.SiglaUc).FirstOrDefaultAsync();
             nota.Aluno = await _context.Alunos.Where(a => a.Nome == notaDTO.NomeAluno).FirstOrDefaultAsync();
 
             try
@@ -120,18 +121,26 @@ namespace Universidade_Api.Controllers
                 return BadRequest();
             }
 
-            Aluno? aluno = await _context.Alunos.Where(a => a.Nome == notaDTO.NomeAluno).FirstOrDefaultAsync();
-            UnidadeCurricular? unidadeCurricular = await _context.UnidadesCurriculares.Where(c => c.Sigla == notaDTO.SiglaUnidadeCurricular).FirstOrDefaultAsync();
 
-            if (aluno == null || unidadeCurricular == null)
+            UnidadeCurricular? unidadeCurricular = await _context.UnidadesCurriculares.Where(uc => uc.Sigla == notaDTO.SiglaUc).FirstOrDefaultAsync();
+            Aluno? aluno = await _context.Alunos.Where(a => a.Nome == notaDTO.NomeAluno).FirstOrDefaultAsync();
+
+            if (aluno == null)
             {
-                return BadRequest("Aluno ou unidade curricular não encontrados");
+                return BadRequest("Aluno não encontrado");
+            }
+            if (unidadeCurricular == null)
+            {
+                return BadRequest("Unidade curricular não encontrada");
             }
             if (aluno?.UnidadesCurriculares?.Contains(unidadeCurricular) == false)
             {
                 return BadRequest("Aluno não está inscrito na unidade curricular");
             }
-
+            if (NotaIsValid(notaDTO) == false)
+            {
+                return BadRequest("Nota inválida");
+            }
             var nota = new Nota
             {
                 Valor = notaDTO.Valor,
@@ -168,9 +177,16 @@ namespace Universidade_Api.Controllers
             return NoContent();
         }
 
+        /// If the context is null, return false. Otherwise, return the result of the Any() function
         private bool NotaExists(long id)
         {
             return (_context.Notas?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        /// It checks if the value of the note is between 0 and 20
+        private bool NotaIsValid(NotaDTO notaDTO)
+        {
+            return notaDTO.Valor >= 0 && notaDTO.Valor <= 20;
         }
     }
 }

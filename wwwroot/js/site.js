@@ -1,4 +1,4 @@
-const uri = 'api/universidade'
+const uri = 'api'
 let cursos = []
 let alunos = []
 

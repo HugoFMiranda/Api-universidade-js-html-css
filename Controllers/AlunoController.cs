@@ -63,6 +63,7 @@ namespace Universidade_Api.Controllers
             return AlunoToDTO(aluno);
         }
 
+        // GET: api/Aluno/LES
         [HttpGet("{sigla}")]
         public async Task<ActionResult<IEnumerable<AlunoDTO>>> GetCurso(string sigla)
         {

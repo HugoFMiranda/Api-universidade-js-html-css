@@ -6,7 +6,7 @@ namespace Universidade_Api
 
         public Double Valor { get; set; }
 
-        public string? SiglaUnidadeCurricular { get; set; }
+        public string? SiglaUc { get; set; }
 
         public string? NomeAluno { get; set; }
     }

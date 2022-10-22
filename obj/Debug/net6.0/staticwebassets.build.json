@@ -1,71 +1,11 @@
 {
   "Version": 1,
-  "Hash": "taaUB/HSHhctCpiBBVrHOjvEMrRop91E4uMI5ToR/78=",
+  "Hash": "8itl3XaeRP7Qd5EuxyUP1L7JnupaJFZnmwkbzPaRthc=",
   "Source": "Universidade-Api",
   "BasePath": "_content/Universidade-Api",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [
-    {
-      "Name": "Universidade-Api\\wwwroot",
-      "Source": "Universidade-Api",
-      "ContentRoot": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\",
-      "BasePath": "_content/Universidade-Api",
-      "Pattern": "**"
-    }
-  ],
-  "Assets": [
-    {
-      "Identity": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\css\\site.css",
-      "SourceId": "Universidade-Api",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\",
-      "BasePath": "_content/Universidade-Api",
-      "RelativePath": "css/site.css",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\site.css"
-    },
-    {
-      "Identity": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\index.html",
-      "SourceId": "Universidade-Api",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\",
-      "BasePath": "_content/Universidade-Api",
-      "RelativePath": "index.html",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\index.html"
-    },
-    {
-      "Identity": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\js\\site.js",
-      "SourceId": "Universidade-Api",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Hugo\\Desktop\\SINF2\\Api-Universidade-js-html-css\\wwwroot\\",
-      "BasePath": "_content/Universidade-Api",
-      "RelativePath": "js/site.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\site.js"
-    }
-  ]
+  "DiscoveryPatterns": [],
+  "Assets": []
 }

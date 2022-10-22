@@ -15,12 +15,30 @@
         <input type="submit" value="Add">
     </form><br>
 
+    <h3>Add Nota</h3>
+    <form action="javascript:void(0);" method="POST" onsubmit="addNota()">
+        <input type="text" id="add-nota_valor" placeholder="Valor Nota">
+        <input type="text" id="add-nota_aluno" placeholder="Nome Aluno">
+        <input type="text" id="add-nota_uc" placeholder="Sigla Unidade Curricular">
+        <input type="submit" value="Add">
+    </form>
+
+    <h3>Add UC</h3>
+    <form action="javascript:void(0);" method="POST" onsubmit="addUc()">
+        <input type="text" id="add-uc_sigla" placeholder="Sigla">
+        <input type="text" id="add-uc_nome" placeholder="Nome">
+        <input type="text" id="add-uc_sigla-curso" placeholder="Sigla Curso">
+        <input type="text" id="add-uc_ano" placeholder="Ano">
+        <input type="submit" value="Add">
+    </form>
+
     <h3>Add Aluno</h3>
     <form action="javascript:void(0);" method="POST" onsubmit="addAluno()">
         <input type="text" id="add-aluno_nome" placeholder="Nome Aluno">
         <input type="text" id="add-aluno_curso" placeholder="Sigla curso">
         <input type="submit" value="Add">
     </form>
+
 
     <h4>Cursos</h4>
 
